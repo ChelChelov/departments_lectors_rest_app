@@ -26,5 +26,5 @@ public class Department {
     @JoinTable(name = "lectors_departments"
             , joinColumns = @JoinColumn(name = "departments_id")
             , inverseJoinColumns = @JoinColumn(name = "lectors_id"))
-    private List<Department> departments;
+    private List<Lector> lectors;
 }
