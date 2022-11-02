@@ -3,6 +3,7 @@ package com.olegsazonov.departments_lectors_rest_app.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,4 +28,11 @@ public class Department {
             , joinColumns = @JoinColumn(name = "departments_id")
             , inverseJoinColumns = @JoinColumn(name = "lectors_id"))
     private List<Lector> lectors;
+
+//    public void addLectorToDepartment(Lector lector) {
+//        if (lectors == null) {
+//            lectors = new ArrayList<>();
+//        }
+//        lectors.add(lector);
+//    }
 }
