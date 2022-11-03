@@ -1,19 +1,22 @@
 package com.olegsazonov.departments_lectors_rest_app.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "lectors")
-@Data
+@Getter
+@Setter
 public class Lector {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -24,15 +27,17 @@ public class Lector {
     @Column(name = "salary")
     private int salary;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "academic_degree")
-    private String academicDegree;
+    private AcademicDegree academicDegree;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE
-            , CascadeType.REFRESH, CascadeType.DETACH})
+            , CascadeType.REFRESH, CascadeType.DETACH}
+            , fetch = FetchType.EAGER)
     @JoinTable(name = "lectors_departments"
-            , joinColumns = @JoinColumn(name = "lectors_id")
-            , inverseJoinColumns = @JoinColumn(name = "departments_id"))
-    private List<Department> departments;
+            , joinColumns = @JoinColumn(name = "lector_id")
+            , inverseJoinColumns = @JoinColumn(name = "department_id"))
+    private Set<Department> departments = new HashSet<>();
 
 //    public void addDepartmentToLector(Department department) {
 //        if (departments == null) {
@@ -40,4 +45,19 @@ public class Lector {
 //        }
 //        departments.add(department);
 //    }
+
+    public enum AcademicDegree {
+        CANDIDATE("Candidate of Sciences"), DOCTOR("Doctor of Sciences"), ASPIRANT("Aspirant"), PROFESSOR("Professor");
+
+        private final String degree;
+
+        private AcademicDegree(String degree) {
+            this.degree = degree;
+        }
+
+        @Override
+        public String toString() {
+            return degree;
+        }
+    }
 }

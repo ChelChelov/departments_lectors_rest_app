@@ -1,33 +1,31 @@
 package com.olegsazonov.departments_lectors_rest_app.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "departments")
-@Data
+@Getter
+@Setter
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "lectors_id")
+    @JoinColumn(name = "head_of_department_id")
     private Lector headOfDepartment;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE
-            , CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "lectors_departments"
-            , joinColumns = @JoinColumn(name = "departments_id")
-            , inverseJoinColumns = @JoinColumn(name = "lectors_id"))
-    private List<Lector> lectors;
+    @ManyToMany(mappedBy = "departments", fetch = FetchType.EAGER)
+    private Set<Lector> lectors = new HashSet<>();
 
 //    public void addLectorToDepartment(Lector lector) {
 //        if (lectors == null) {
