@@ -2,8 +2,10 @@ package com.olegsazonov.departments_lectors_rest_app.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +13,7 @@ import java.util.Set;
 @Table(name = "lectors")
 @Getter
 @Setter
+@ToString
 public class Lector {
 
     @Id
@@ -25,7 +28,7 @@ public class Lector {
     private String surname;
 
     @Column(name = "salary")
-    private int salary;
+    private BigDecimal salary;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "academic_degree")
