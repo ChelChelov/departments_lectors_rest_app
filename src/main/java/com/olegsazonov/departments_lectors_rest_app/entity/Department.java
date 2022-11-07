@@ -1,6 +1,8 @@
 package com.olegsazonov.departments_lectors_rest_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -13,21 +15,30 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "head_of_department_id")
-    private Lector headOfDepartment;
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "head_of_department_id")
+//    private Lector headOfDepartment;
 
-    @ManyToMany(mappedBy = "departments", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "departments"
+            , cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            , fetch = FetchType.LAZY)
+    @JsonIgnore // is used to ignore the logical property used in serialization and deserialization.
     private Set<Lector> lectors = new HashSet<>();
+
+    public Department(String name) {
+        this.name = name;
+    }
+}
+
 
 //    public void addLectorToDepartment(Lector lector) {
 //        if (lectors == null) {
@@ -35,4 +46,3 @@ public class Department {
 //        }
 //        lectors.add(lector);
 //    }
-}

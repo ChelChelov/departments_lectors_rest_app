@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
+    private static final String DEPARTMENT_SAVED_MESSAGE = "Department was saved with id: %s";
 
     @Autowired
     DepartmentRepository departmentRepository;
@@ -22,7 +23,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public String saveDepartment(Department department) {
         departmentRepository.save(department);
-        return "Department was saved with id: " + department.getId().toString();
+        return String.format(DEPARTMENT_SAVED_MESSAGE, department.getId().toString());
     }
 
     @Override

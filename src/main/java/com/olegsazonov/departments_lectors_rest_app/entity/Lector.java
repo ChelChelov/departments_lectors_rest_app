@@ -1,6 +1,7 @@
 package com.olegsazonov.departments_lectors_rest_app.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Lector {
 
     @Id
@@ -24,9 +26,6 @@ public class Lector {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "surname")
-    private String surname;
-
     @Column(name = "salary")
     private BigDecimal salary;
 
@@ -34,27 +33,39 @@ public class Lector {
     @Column(name = "academic_degree")
     private AcademicDegree academicDegree;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE
-            , CascadeType.REFRESH, CascadeType.DETACH}
-            , fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            , fetch = FetchType.LAZY)
     @JoinTable(name = "lectors_departments"
             , joinColumns = @JoinColumn(name = "lector_id")
             , inverseJoinColumns = @JoinColumn(name = "department_id"))
     private Set<Department> departments = new HashSet<>();
 
-//    public void addDepartmentToLector(Department department) {
-//        if (departments == null) {
-//            departments = new ArrayList<>();
-//        }
-//        departments.add(department);
-//    }
+    public Lector(String name, BigDecimal salary, AcademicDegree academicDegree) {
+        this.name = name;
+        this.salary = salary;
+        this.academicDegree = academicDegree;
+    }
+
+    public void addDepartment(Department department) {
+        this.departments.add(department);
+        department.getLectors().add(this);
+    }
+
+    public void removeDepartment(long departmentId) {
+        Department department = this.departments.stream()
+                .filter(t -> t.getId() == departmentId).findFirst().orElse(null);
+        if (department != null) {
+            this.departments.remove(department);
+            department.getLectors().remove(this);
+        }
+    }
 
     public enum AcademicDegree {
         CANDIDATE("Candidate of Sciences"), DOCTOR("Doctor of Sciences"), ASPIRANT("Aspirant"), PROFESSOR("Professor");
 
         private final String degree;
 
-        private AcademicDegree(String degree) {
+        AcademicDegree(String degree) {
             this.degree = degree;
         }
 
@@ -64,3 +75,9 @@ public class Lector {
         }
     }
 }
+//    public void addDepartmentToLector(Department department) {
+//        if (departments == null) {
+//            departments = new ArrayList<>();
+//        }
+//        departments.add(department);
+//    }
